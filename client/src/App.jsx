@@ -1,35 +1,67 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useState } from "react";
+import { QueryClient, QueryClientProvider, useMutation } from "react-query";
+import DropZone from "./components/DropZone";
+import FileInput from "./components/FileInput";
 
-function App() {
-  const [count, setCount] = useState(0)
+const queryClient = new QueryClient();
+const serverURL = import.meta.env.VITE_SERVER_URL;
 
+export default function App() {
   return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    <QueryClientProvider client={queryClient}>
+      <Component />
+    </QueryClientProvider>
+  );
 }
 
-export default App
+function Component() {
+  const [file, setFile] = useState(null);
+
+  const mutation = useMutation(
+    (file) => {
+      const formData = new FormData();
+      formData.append("file", file);
+
+      return fetch(`${serverURL}/api/upload`, {
+        method: "POST",
+        body: formData,
+      }).then((res) => res.json());
+    },
+    {
+      onSuccess: (data) => {
+        console.log(data);
+      },
+      onError: (error) => {
+        console.error(error);
+      },
+    }
+  );
+
+  const handleFileChange = (e) => {
+    setFile(e.target.files[0]);
+  };
+
+  const handleDrop = (file) => {
+    setFile(file);
+  };
+
+  const uploadFile = () => {
+    if (file) {
+      mutation.mutate(file);
+    } else {
+      console.error("No file selected");
+    }
+  };
+
+  return (
+    <div className="w-full h-screen bg-slate-800">
+      <h1>Upload a file</h1>
+      <DropZone onDrop={handleDrop} />
+      <FileInput onFileChange={handleFileChange} />
+      <button onClick={uploadFile}>Upload</button>
+      {mutation.isLoading && <p>Uploading...</p>}
+      {mutation.isError && <p>Error uploading file: {mutation.error.message}</p>}
+      {mutation.isSuccess && <p>File uploaded successfully</p>}
+    </div>
+  );
+}
