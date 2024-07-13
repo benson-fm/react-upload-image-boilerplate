@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { QueryClient, QueryClientProvider, useMutation } from "react-query";
 import DropZone from "./components/DropZone";
-import FileInput from "./components/FileInput";
 
 const queryClient = new QueryClient();
 const serverURL = import.meta.env.VITE_SERVER_URL;
@@ -54,10 +53,9 @@ function Component() {
   };
 
   return (
-    <div className="w-full h-screen bg-slate-800">
-      <h1>Upload a file</h1>
-      <DropZone onDrop={handleDrop} />
-      <FileInput onFileChange={handleFileChange} />
+    <div className="flex flex-col w-full h-screen bg-slate-800">
+      <h1 className="text-2xl text-white text-center p-10">Upload a file</h1>
+      <DropZone onDrop={[handleDrop, handleFileChange]}/>
       <button onClick={uploadFile}>Upload</button>
       {mutation.isLoading && <p>Uploading...</p>}
       {mutation.isError && <p>Error uploading file: {mutation.error.message}</p>}
