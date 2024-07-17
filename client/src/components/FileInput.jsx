@@ -1,4 +1,4 @@
-import PropTypes from 'prop-types';
+import PropTypes from "prop-types";
 
 export default function FileInput({ onFileChange }) {
   const handleFileChange = (e) => {
@@ -6,7 +6,12 @@ export default function FileInput({ onFileChange }) {
     onFileChange(file);
   };
 
-  return <input type="file" onChange={handleFileChange} />;
+  return (
+    <>
+      <label htmlFor="file" className="text-blue-500 hover:underline">browse</label>
+      <input type="file" id="file" onChange={handleFileChange} className="hidden" />
+    </>
+  );
 }
 
 FileInput.propTypes = {

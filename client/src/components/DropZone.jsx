@@ -4,7 +4,7 @@ import blueArrow from "../assets/arrow-blue.svg";
 import whiteArrow from "../assets/arrow-white.svg";
 import FileInput from "./FileInput";
 
-export default function DropZone({ onDrop, onFileChange }) {
+export default function DropZone({ onFileChange }) {
   const [isDragOver, setIsDragOver] = useState(false);
 
   const handleDragOver = (e) => {
@@ -16,7 +16,7 @@ export default function DropZone({ onDrop, onFileChange }) {
     e.preventDefault();
     setIsDragOver(false);
     const droppedFile = e.dataTransfer.files[0];
-    onDrop(droppedFile);
+    onFileChange(droppedFile);
   };
 
   const handleDragLeave = () => {
@@ -51,9 +51,9 @@ export default function DropZone({ onDrop, onFileChange }) {
               </p>
               <p className={`text-md text-center text-gray-500 ${show}`}>
                 Drag and drop or{" "}
-                <span className="text-blue-500 hover:underline">browse<FileInput onFileChange={onFileChange} className="hidden"/></span>
+                <FileInput onFileChange={onFileChange}/>
               </p>
-              <p className={`text-md text-center text-gray-500 ${show}`}>
+              <p className={`text-sm text-center text-gray-500 font-medium ${show}`}>
                 Supports: PDF, JPG, PNG
               </p>
             </div>
@@ -65,6 +65,5 @@ export default function DropZone({ onDrop, onFileChange }) {
 }
 
 DropZone.propTypes = {
-  onDrop: PropTypes.func.isRequired,
-  onFileChange: PropTypes.func.isRequired,
+  onFileChange: PropTypes.func.isRequired
 };

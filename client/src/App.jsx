@@ -36,11 +36,7 @@ function Component() {
     }
   );
 
-  const handleFileChange = (e) => {
-    setFile(e.target.files[0]);
-  };
-
-  const handleDrop = (file) => {
+  const handleFileChange = (file) => {
     setFile(file);
   };
 
@@ -50,15 +46,22 @@ function Component() {
     } else {
       console.error("No file selected");
     }
+
   };
 
   return (
     <div className="flex flex-col w-full h-screen bg-slate-800">
-      <h1 className="text-2xl text-white text-center p-10">Upload a file</h1>
-      <DropZone onDrop={[handleDrop, handleFileChange]}/>
-      <button onClick={uploadFile}>Upload</button>
+      <h1 className="text-2xl text-white text-center p-10 font-bold">Upload a file</h1>
+      <DropZone onFileChange={handleFileChange} />
+      <div className="flex justify-center pt-10">
+        <button onClick={uploadFile} className="bg-white h-12 w-24 rounded-md text-blue-500 font-medium hover:bg-blue-500 hover:text-white">
+          Upload
+        </button>
+      </div>
       {mutation.isLoading && <p>Uploading...</p>}
-      {mutation.isError && <p>Error uploading file: {mutation.error.message}</p>}
+      {mutation.isError && (
+        <p>Error uploading file: {mutation.error.message}</p>
+      )}
       {mutation.isSuccess && <p>File uploaded successfully</p>}
     </div>
   );
